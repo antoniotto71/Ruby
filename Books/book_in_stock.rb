@@ -3,11 +3,10 @@ class BookInStock
 
   def initialize(isbn, price)
     @isbn = isbn
-    @price = price  
+    @price = price
   end
 end
 
-book = BookInStock.new("isbn1", 12.33)
+book = BookInStock.new('isbn', 12.33)
 
 p book
-

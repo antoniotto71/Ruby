@@ -12,7 +12,7 @@ class CsvReader
     end
   end
   
-  def total_value_in_stock 
+  def total_value_in_stock
     sum = 0.0
     @books_in_stock.each { |book| sum += book.price.to_f }
     sum
