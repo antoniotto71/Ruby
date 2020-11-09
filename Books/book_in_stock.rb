@@ -6,7 +6,3 @@ class BookInStock
     @price = Float(price)
   end
 end
-
-book = BookInStock.new('isbn', 12.33)
-
-p book
