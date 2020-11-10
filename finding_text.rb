@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 puts 'Please enter some information'
 
 user_input = gets.chomp
