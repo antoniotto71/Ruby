@@ -9,7 +9,7 @@ class CargoHold
     puts obj.object_id
     add_to_stack(obj)
   end
-  
+
   def unload
     take_from_stack
   end
