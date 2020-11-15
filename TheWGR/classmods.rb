@@ -40,7 +40,13 @@ end
 
 class C
   include M
-  include N
+  # include N
+  def report
+    puts "'report' method in class C"
+    puts "About to trigger the next higher-up report method..."
+    super
+    puts "Back from the 'super' call."
+  end
 end
 
 c = C.new
