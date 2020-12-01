@@ -10,6 +10,12 @@ def sum_pairs(ints, s)
   nil
 end
 
+def three_sum(elements, sum)
+  elements.combination(3).detect do |a, b, c|
+    (a + b + c) == sum
+  end
+end
+
 
 arry = File.readlines('input.txt').map(&:to_i)
 
@@ -23,3 +29,10 @@ prod = cop[0] * cop[1]
 
 puts prod
 
+triplet = three_sum(arry, 2020)
+
+p triplet
+
+prod = triplet[0] * triplet[1] * triplet[2]
+
+p prod
