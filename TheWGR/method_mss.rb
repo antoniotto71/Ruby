@@ -56,6 +56,8 @@ class Person
 
   ant.has_friend(joe)
 
+  joe.has_friend(ant)
+
   ant.has_hobby("rings")
 
   joe.has_hobby("running")
