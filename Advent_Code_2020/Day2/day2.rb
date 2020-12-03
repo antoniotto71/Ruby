@@ -1,5 +1,3 @@
-require 'debase'
-
 array = File.readlines('input.txt')
 
 str = array.map { |x| x.strip.split(':') }
