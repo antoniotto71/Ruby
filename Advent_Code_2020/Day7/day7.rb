@@ -1,3 +1,56 @@
+class RuleParser
+  attr_reader :edges
+
+  def initialize(rule)
+    @edges = parse_rule(rule)
+  end
+
+  private
+
+  def parse_rule(rule)
+    caps = rule.match(/^(?<outer>[\w\s]+) bags contain (?<inner>.*)/).named_captures
+    outer = caps['outer']
+    inner = caps['inner']
+
+    parse_inner(inner).map do |edge|
+      edge.merge(outer: outer)
+    end
+  end
+
+  def parse_inner(inner)
+
+    return [] if inner = 'no other bags'
+    inner.scan(/(\d+) [\w\s]+ bags?/)
+
+
+  end
+
+
+
+
+
+end
+
+
+
+class Graph
+  def initialize(input)
+    @input = input
+    @graph = {}
+  end
+
+  def add_edge(outer, inner, count)
+    outer_bag = @graph[outer] ||= Bag.new(outer)
+    inner_bag = @graph[inner] ||= Bag.new(inner)
+
+    edge = Edge.new(outer, inner, count)
+    outer_bag.add_edge(edge)
+    inner_bag.add_edge(edge)
+  end
+
+end
+
+
 class Edge
   attr_reader :outer, :inner, :count
 
@@ -9,7 +62,7 @@ class Edge
 end
 
 class Bag
-  attr_reader :color, :edges
+  attr_reader :color
 
   def initialize(color)
     @color = color
@@ -22,6 +75,10 @@ class Bag
 
   def outers
     @edges.select { |edge| edge.inner == color }
+  end
+
+  def inner
+    @edges.select { |edge| edge.outer == color }
   end
 
 
