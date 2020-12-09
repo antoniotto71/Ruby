@@ -2,19 +2,19 @@ class RelationDescription  # classe che descrive il parser
   attr_reader :info # unico attributo che fornirà l' informazione richiesta dalla singola linea di testo
 
   def initialize(str)
-    @info = parse_description(str) # nel corso dell' inizializzazione si attribuisce all' attributo info il risultato del metodo
+    @info = parse_description(str) # nel corso dell' inizializzazione si assegna all' attributo info il risultato del metodo
   end
 
   private
 
   def parse_description(str) # metodo che opera sulla singola linea
     caps = str.match(/^(?<outer>[\w\s]+) bags contain (?<inner>.*)/).named_captures # estrae il colore della borsa esterna e il resto della linea sulle borse interne
-    outer = caps['outer'] # cattura la prima regex
-    inner = caps['inner'] # cattura la seconda regex
+    outer = caps['outer'] # cattura la prima regex sulla borsa esterna
+    inner = caps['inner'] # cattura la seconda regex sulle borse interne in toto
 
-    inners = parse_inner(inner)  # la seconda cattura viene processata
+    inners = parse_inner(inner)  # la seconda cattura viene processata come stringa e inviata al metodo come hash
 
-    inners.compact.map do |color, count|
+    inners.compact.map do |color, count| # si eliminano i nil e si crea l' hash finale che ha per ogni colore esterno quelli interni e il conto
       { outer: outer, inner: color, count: count }
     end
   end
@@ -22,14 +22,14 @@ class RelationDescription  # classe che descrive il parser
   def parse_inner(str)
     return [] if str == 'no other bags.'
 
-    str.scan(/(\d+) ([a-z\s]+) bags?/m).each_with_object({}) do |(count, color), hsh|
+    str.scan(/(\d+) ([a-z\s]+) bags?/m).each_with_object({}) do |(count, color), hsh|  # i due risultati vengono usati per creare un hash con colore  => e conto => per ogni colore interno
       hsh[color] = count.to_i
     end
   end
 end
 
 class BagGraph
-  def self.build(rel_descriptions)
+  def self.build(rel_descriptions)  # rel_description è un array di array di hash
     new.tap do |bag_graph|
       rel_descriptions.each do |desc|
         rel = RelationDescription.new(desc)

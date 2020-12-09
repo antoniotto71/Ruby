@@ -4,4 +4,5 @@ string = 'dull turquoise bags contain 5 plaid magenta bags, 3 bright aqua bags, 
 
 lab = RelationDescription.new(string).info
 
+
 p lab
