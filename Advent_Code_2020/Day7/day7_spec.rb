@@ -1,8 +1,8 @@
 require_relative './day7'
 require 'rspec'
 
-RSpec.describe Graph do
-  let(:rules) do
+RSpec.describe BagGraph do
+  let(:setup) do
     <<~LINES
       light red bags contain 1 bright white bag, 2 muted yellow bags.
       dark orange bags contain 3 bright white bags, 4 muted yellow bags.
@@ -16,9 +16,10 @@ RSpec.describe Graph do
     LINES
   end
 
-  it 'can count all containing bags' do
-    graph = Graph.build(rules)
-    expect(graph.all_outers('shiny gold').uniq.count).to eq(4)
+  it 'it builds graph and can count parents' do
+    bag_graph = BagGraph.build(setup.split("\n"))
+    rents = bag_graph.all_parents('shiny gold').uniq
+    expect(rents.count).to eq(4)
   end
 
 end

@@ -1,69 +1,76 @@
-class RelationDescription
-  attr_reader :info
+class RelationDescription  # classe che descrive il parser
+  attr_reader :info # unico attributo che fornirà l' informazione richiesta dalla singola linea di testo
 
   def initialize(str)
-    @info = parse_description(str)
+    @info = parse_description(str) # nel corso dell' inizializzazione si attribuisce all' attributo info il risultato del metodo
   end
 
   private
 
-  def parse_description(str)
-    caps = str.match(/^(?<outer>[\w\s]+) bags contain (?<inner>.*)/).named_captures
-    outer = caps['outer']
-    inner = caps['inner']
+  def parse_description(str) # metodo che opera sulla singola linea
+    caps = str.match(/^(?<outer>[\w\s]+) bags contain (?<inner>.*)/).named_captures # estrae il colore della borsa esterna e il resto della linea sulle borse interne
+    outer = caps['outer'] # cattura la prima regex
+    inner = caps['inner'] # cattura la seconda regex
 
-    inners = parse_inner(inner)
+    inners = parse_inner(inner)  # la seconda cattura viene processata
 
     inners.compact.map do |color, count|
-      { outer: outer, inner: color, count: count}
+      { outer: outer, inner: color, count: count }
     end
   end
 
   def parse_inner(str)
-    return [] if (str == 'no other bags.')
+    return [] if str == 'no other bags.'
+
     str.scan(/(\d+) ([a-z\s]+) bags?/m).each_with_object({}) do |(count, color), hsh|
       hsh[color] = count.to_i
     end
   end
 end
 
-
-
-class Graph
-  def self.build(input)
-    new.tap do |graph|
-      input.split("\n").each do |rule|
-        RelationDescription.new(rule).edges.each do |edge|
-          graph.add_edge(edge[:outer], edge[:inner], edge[:count])
+class BagGraph
+  def self.build(rel_descriptions)
+    new.tap do |bag_graph|
+      rel_descriptions.each do |desc|
+        rel = RelationDescription.new(desc)
+        rel.info.each do |relation|
+          bag_graph.add_relationship(relation[:outer], relation[:inner], relation[:count])
         end
       end
     end
   end
+
   def initialize
-    @graph = {}
+    @nodes = {}
   end
 
-  def add_edge(outer, inner, count)
-    outer_bag = @graph[outer] ||= Bag.new(outer)
-    inner_bag = @graph[inner] ||= Bag.new(inner)
+  def add_relationship(outer, inner, count)
+    outer_color = @nodes[outer] ||= Color.new(outer)
+    inner_color = @nodes[inner] ||= Color.new(inner)
 
-    edge = Edge.new(outer, inner, count)
-    outer_bag.add_edge(edge)
-    inner_bag.add_edge(edge)
+    rel = Relationship.new(outer, inner, count)
+
+    outer_color.add_relationship(rel)
+    inner_color.add_relationship(rel)
   end
 
-  def all_outers(color)
-    bag = @graph[color]
-    return [] if bag.outers.empty?
+  def all_parents(color)
+    color = @nodes[color]
+    return [] if color.parents.empty?
 
-    outer_names = bag.outers.map(&:outer)
-    outer_names = outer_names + outer_names.flat_map { |n| all_outers(n)}
+    color.parents + color.parents.flat_map { |n| all_parents(n) }
+  end
+
+  def count_children(color)
+    color = @nodes[color]
+    return 1 if color.children.empty?
+
+    1 + color.children.sum {|child| child.count * count_children(child.inner)}
   end
 
 end
 
-
-class Edge
+class Relationship
   attr_reader :outer, :inner, :count
 
   def initialize(outer, inner, count)
@@ -73,27 +80,23 @@ class Edge
   end
 end
 
-class Bag
-  attr_reader :color
+class Color
+  attr_reader :name
 
-  def initialize(color)
-    @color = color
-    @edges = []
+  def initialize(name)
+    @name = name
+    @relationships = []
   end
 
-  def add_edge(edge)
-    @edges << edge
+  def add_relationship(rel)
+    @relationships << rel
   end
 
-  def outers
-    @edges.select { |edge| edge.inner == color }
+  def parents
+    @relationships.select { |rel| rel.inner == name }.map(&:outer)
   end
 
-  def inner
-    @edges.select { |edge| edge.outer == color }
+  def children
+    @relationships.select { |rel| rel.outer == name }
   end
-
-
 end
-
-
