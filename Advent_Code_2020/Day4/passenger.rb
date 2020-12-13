@@ -18,7 +18,7 @@ class Passenger
     a = (1920..2002).include?(@byr)
     b = (2010..2020).include?(@iyr)
     c = (2020...2030).include?(@eyr)
-    d = !(@hcl =~ /\#\h{6}$/).nil?
+    d = !(@hcl =~ /^\#\h{6}$/).nil?
     e = %w[amb blu brn gry grn hzl oth].include?(@ecl)
     f = !(@pid =~ /^\d{9}$/).nil?
     /(\d+)(\w\w)/ =~ hgt
