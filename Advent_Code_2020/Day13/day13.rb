@@ -1,4 +1,4 @@
-data = File.readlines("input_test.txt", "\n").map.to_a
+data = File.readlines("input.txt", "\n").map.to_a
 
 data2 = data.map {|x| x.gsub(",x", "").split(",").map(&:to_i)}
 
@@ -59,13 +59,13 @@ end
 def find_result2
   test2 = []
   counter = 0
-  (1..).each do |num|
+  (1058443396696790..1058443396696792).each do |num|
     test = []
     @divs.each do |elem|
       test << num%elem
     end
     counter += 1
-    break if test == @target
+    break if test == @target2
   end
   counter
 end
