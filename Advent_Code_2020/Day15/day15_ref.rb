@@ -13,7 +13,7 @@ def find_result(input, target)
   end
   ((input.size + 1)..target).each do |turn|
     if hashtable.has_key?(last)
-      following = turn - 1 - hashtable[last]
+      following = turn - hashtable[last]
     else following = 0
     end
     hashtable[last] = turn - 1
@@ -23,4 +23,4 @@ def find_result(input, target)
 end
 
 
-p find_result(input, 30000000)
+p find_result(input, 2019)

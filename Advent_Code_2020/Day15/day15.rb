@@ -16,4 +16,4 @@ def solution(arr, turn)
   return arr
 end
 
-puts solution(input, 2020).last
+puts solution(input, 2020)
