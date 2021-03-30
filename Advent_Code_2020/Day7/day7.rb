@@ -7,7 +7,7 @@ class RelationDescription  # classe che descrive il parser
 
   private
 
-  def parse_description(str) # metodo che opera sulla singola linea
+  def parse_description(str) # metodo che opera sulla singola linea di input
     caps = str.match(/^(?<outer>[\w\s]+) bags contain (?<inner>.*)/).named_captures # estrae il colore della borsa esterna e il resto della linea sulle borse interne
     outer = caps['outer'] # cattura la prima regex sulla borsa esterna
     inner = caps['inner'] # cattura la seconda regex sulle borse interne in toto
